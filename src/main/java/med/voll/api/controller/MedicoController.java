@@ -16,37 +16,37 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/medicos")
 public class MedicoController {
 
     @Autowired
-    private IMedicoRepository repository;
+    private IMedicoRepository repositoryMedico;
 
     @Transactional
     @PostMapping
-    public ResponseEntity registrar(@RequestBody @Valid DtoRegistrosMedicos datos, UriComponentsBuilder uriComponentsBuilder){
-        var medico = new Medico(datos);
-        repository.save(medico);
+    public ResponseEntity registrarMedico(@RequestBody @Valid DtoRegistrosMedicos datosRegistrosMedicos, UriComponentsBuilder uriComponentsBuilder){
+        var medico = new Medico(datosRegistrosMedicos);
+        repositoryMedico.save(medico);
 
-        var uri = uriComponentsBuilder.path("/medicos/{id}").buildAndExpand(medico.getId()).toUri();
-        return ResponseEntity.created(uri).body(new DtoDetallesMedico(medico));
+        URI url = uriComponentsBuilder.path("/medicos/{id}").buildAndExpand(medico.getId()).toUri();
+        return ResponseEntity.created(url).body(new DtoDetallesMedico(medico));
     }
 
     @GetMapping
-    public ResponseEntity<Page<DtoListaMedicos>> listar(@PageableDefault(size=10, sort = {"nombre"}) Pageable paginacion){
-        var page = repository.findAllByActivoTrue(paginacion)
+    public ResponseEntity<Page<DtoListaMedicos>> listarMedicos(@PageableDefault(size=5, sort = {"nombre"}) Pageable paginacion){
+        var page = repositoryMedico.findAllByActivoTrue(paginacion)
                 .map(DtoListaMedicos::new);
         return ResponseEntity.ok(page);
     }
 
     @Transactional
     @PutMapping
-    public ResponseEntity actualizar(@RequestBody @Valid DtoActualizarMedicos datos){
-        var medico = repository.getReferenceById(datos.id());
-        medico.actualizarInformacion(datos);
+    public ResponseEntity actualizarMedicos(@RequestBody @Valid DtoActualizarMedicos datosActualizarMedico){
+        var medico = repositoryMedico.getReferenceById(datosActualizarMedico.id());
+        medico.actualizarInformacion(datosActualizarMedico);
         return ResponseEntity.ok(new DtoDetallesMedico(medico));
     }
 
@@ -56,17 +56,17 @@ public class MedicoController {
     //mapeada y es un elemento dinamico
     public ResponseEntity eliminar(@PathVariable Long id){
         //eliminacion fisica, elimina por completo de la bd
-        // repository.deleteById(id);
+        // repositoryMedico.deleteById(id);
         //eliminacion logica, desactiva la informacion
         //pero no la elimina para evitar errores de negocio
-        var medico = repository.getReferenceById(id);
+        var medico = repositoryMedico.getReferenceById(id);
         medico.eliminar();
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity detallar(@PathVariable Long id){
-        var medico = repository.getReferenceById(id);
+    public ResponseEntity retornaDtoMedicos(@PathVariable Long id){
+        var medico = repositoryMedico.getReferenceById(id);
 
         return ResponseEntity.ok(new DtoDetallesMedico(medico));
     }
