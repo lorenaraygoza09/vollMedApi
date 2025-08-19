@@ -22,6 +22,11 @@ public class gestorDeErrores {
                 .map(DtoValidacionErrores::new).toList());
     }
 
+    @ExceptionHandler(ValidacionException.class)
+    public ResponseEntity gestionErrorValidacion(ValidacionException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
     public record DtoValidacionErrores(
             String campo,
             String mensaje

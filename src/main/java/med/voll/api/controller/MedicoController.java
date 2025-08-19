@@ -1,5 +1,6 @@
 package med.voll.api.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import med.voll.api.dto.DtoActualizarMedicos;
 import med.voll.api.dto.DtoDetallesMedico;
@@ -20,6 +21,8 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/medicos")
+@SecurityRequirement(name = "bearer-key")
+
 public class MedicoController {
 
     @Autowired
@@ -37,7 +40,7 @@ public class MedicoController {
 
     @GetMapping
     public ResponseEntity<Page<DtoListaMedicos>> listarMedicos(@PageableDefault(size=5, sort = {"nombre"}) Pageable paginacion){
-        var page = repositoryMedico.findAllByActivoTrue(paginacion)
+        var page = repositoryMedico.findByActivoTrue(paginacion)
                 .map(DtoListaMedicos::new);
         return ResponseEntity.ok(page);
     }

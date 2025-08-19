@@ -1,6 +1,7 @@
 package med.voll.api.dto;
 
 import med.voll.api.model.Direccion;
+import med.voll.api.model.Especialidad;
 import med.voll.api.model.Medico;
 
 public record DtoDetallesMedico(

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import med.voll.api.dto.DtoActualizarMedicos;
 import med.voll.api.dto.DtoRegistrosMedicos;
-import med.voll.api.dto.Especialidad;
 
 @Getter
 @NoArgsConstructor

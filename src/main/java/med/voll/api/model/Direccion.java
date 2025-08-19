@@ -30,6 +30,9 @@ public class Direccion {
         this.estado = dtoDireccion.estado();
     }
 
+    public Direccion(Direccion direccion) {
+    }
+
     public void actualizarDireccion(DtoDireccion datos) {
         if (datos.calle() != null){
             this.calle = datos.calle();
